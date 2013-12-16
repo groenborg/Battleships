@@ -1,4 +1,4 @@
-package control;
+package captainobvious;
 
 public class Field {
     
