@@ -18,13 +18,22 @@ public class Field {
         this.oppShotTrend = 0;
     }
 
-    public void reset() {
+    public void resetRound() {
         this.shot = false;
         this.hit = false;
         this.resolved = false;
         this.usShip = false;
     }
 
+    public void resetMatch() {
+        this.shot = false;
+        this.hit = false;
+        this.resolved = false;
+        this.usShip = false;
+        this.oppShipTrend = 0;
+        this.oppShotTrend = 0;
+    }
+    
     public void setShot(boolean yes) {
         this.shot = yes;
     }
