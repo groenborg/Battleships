@@ -14,7 +14,12 @@ import java.util.Random;
 public class RAI implements BattleshipAI {
 
     private final String aiName = "Captain Obvious";
-    private Position current;
+    
+    private Position shotCurrent;
+    private int shotIncrement;
+    private int shotSpray;
+    
+    
     private Field[][] map;
     private Random rnd;
     private int matchNumber;
@@ -24,6 +29,7 @@ public class RAI implements BattleshipAI {
     private int nextY;
 
     public RAI() {
+        this.shotCurrent = new Position(0,0);
         this.rnd = new Random();
         this.map = constructMap();
     }
@@ -40,8 +46,9 @@ public class RAI implements BattleshipAI {
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
-
         resetMapFields(false);
+        this.shotCurrent = new Position(0,0);
+        
         nextX = 0;
         nextY = 0;
         sizeX = board.sizeX();
@@ -83,12 +90,34 @@ public class RAI implements BattleshipAI {
 
     @Override
     public Position getFireCoordinates(Fleet fleet) {
-        throw new UnsupportedOperationException("Not supported yet.");
-
+        Position pos;
+        int x = shotCurrent.x;
+        int y = shotCurrent.y;
+        
+        this.shotIncrement = 0;
+        this.shotSpray = 2;
+        
+        if(shotCurrent.x == 0 && shotCurrent.y == 0){
+            
+        }else{
+            x = x + this.shotSpray;
+            if(x >= 10){
+                x = shotIncrement;
+                y++;
+            }
+        }
+        
+        
+        
+        
+        return new Position(x,y);
     }
 
     @Override
     public void hitFeedBack(boolean bln, Fleet fleet) {
+        
+        
+        
     }
 
     // Private methods here
