@@ -29,7 +29,7 @@ public class RAI implements BattleshipAI {
 
     @Override
     public void newMatch(int i) {
-        
+        resetMapFields(true);
     }
 
     @Override
@@ -72,11 +72,10 @@ public class RAI implements BattleshipAI {
         for (int x = 0; x < this.sizeX;) {
             for (int y = 0; y < this.sizeY; ++y) {
                 if(all){
-                    
+                    this.map[x][y].resetMatch();
                 }else{
-                    this.map[x][y].reset();
+                    this.map[x][y].resetRound();
                 }
-                
             }
         }
     }
