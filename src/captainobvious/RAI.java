@@ -17,7 +17,6 @@ public class RAI implements BattleshipAI {
     private int matchNumber;
     private int sizeX = 10;
     private int sizeY = 10;
-    
 
     public RAI() {
         this.map = constructMap();
@@ -30,32 +29,35 @@ public class RAI implements BattleshipAI {
 
     @Override
     public void newMatch(int i) {
+        
     }
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
+        resetMapFields(false);
 
 
 
-        throw new UnsupportedOperationException("Not supported yet.");
+
     }
 
     @Override
     public void incoming(Position pstn) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+        
     }
 
     @Override
     public Position getFireCoordinates(Fleet fleet) {
         throw new UnsupportedOperationException("Not supported yet.");
+
     }
 
     @Override
     public void hitFeedBack(boolean bln, Fleet fleet) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    // PRivate methods here
+    // Private methods here
     private Field[][] constructMap() {
         Field[][] mapField = new Field[sizeX][sizeY];
         for (int x = 0; x < this.sizeX; ++x) {
@@ -66,13 +68,16 @@ public class RAI implements BattleshipAI {
         return mapField;
     }
 
-    private void resetMapFields() {
+    private void resetMapFields(boolean all) {
         for (int x = 0; x < this.sizeX;) {
             for (int y = 0; y < this.sizeY; ++y) {
+                if(all){
+                    
+                }else{
+                    this.map[x][y].reset();
+                }
                 
             }
         }
-
-
     }
 }
