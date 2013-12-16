@@ -18,18 +18,18 @@ public class RAI implements BattleshipAI {
     private Position shotCurrent;
     private int shotIncrement;
     private int shotSpray;
-    
+    private int shotX;
+    private int shotY;
     
     private Field[][] map;
     private Random rnd;
     private int matchNumber;
     private int sizeX = 10;
     private int sizeY = 10;
-    private int nextX;
-    private int nextY;
+    
 
     public RAI() {
-        this.shotCurrent = new Position(0,0);
+        this.shotCurrent = new Position(0, 0);
         this.rnd = new Random();
         this.map = constructMap();
     }
@@ -47,10 +47,10 @@ public class RAI implements BattleshipAI {
     @Override
     public void placeShips(Fleet fleet, Board board) {
         resetMapFields(false);
-        this.shotCurrent = new Position(0,0);
-        
-        nextX = 0;
-        nextY = 0;
+        this.shotCurrent = new Position(0, 0);
+
+        shotX = 42;
+        shotY = 0;
         sizeX = board.sizeX();
         sizeY = board.sizeY();
 
@@ -87,37 +87,42 @@ public class RAI implements BattleshipAI {
     @Override
     public void incoming(Position pstn) {
     }
+    
+//    private Position shotCurrent;
+//    private int shotIncrement;
+//    private int shotSpray;
+//    private int shotX;
+//    private int shotY;
 
     @Override
     public Position getFireCoordinates(Fleet fleet) {
-        Position pos;
-        int x = shotCurrent.x;
-        int y = shotCurrent.y;
+        if (this.shotX == 42){
+            this.shotX = 0;
+            return new Position(this.shotX, this.shotY);
+        }
         
-        this.shotIncrement = 0;
-        this.shotSpray = 2;
-        
-        if(shotCurrent.x == 0 && shotCurrent.y == 0){
-            
-        }else{
-            x = x + this.shotSpray;
-            if(x >= 10){
-                x = shotIncrement;
-                y++;
+        if (this.shotX >= this.sizeX - this.shotSpray - 1){
+            this.shotX = this.shotX + this.shotSpray;
+        } else {
+            this.shotX = this.shotIncrement;
+            if (this.shotY < this.sizeY - 1){
+                this.shotY++;
+            }
+            if (this.shotIncrement == 1){
+                this.shotIncrement = 0;
+            } else {
+                this.shotIncrement = 1;
             }
         }
         
         
         
+        return new Position(this.shotX, this.shotY);
         
-        return new Position(x,y);
     }
 
     @Override
     public void hitFeedBack(boolean bln, Fleet fleet) {
-        
-        
-        
     }
 
     // Private methods here
