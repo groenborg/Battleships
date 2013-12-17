@@ -1,6 +1,8 @@
 package scurvymcpirate;
 
-public class Field{
+
+
+public class Field {
 
     private boolean shot;
     private boolean hit;
@@ -33,7 +35,7 @@ public class Field{
         this.oppShipTrend = 0;
         this.oppShotTrend = 0;
     }
-
+    
     public void setShot(boolean yes) {
         this.shot = yes;
     }
@@ -49,12 +51,12 @@ public class Field{
     public void setUsShip(boolean yes) {
         this.usShip = yes;
     }
-
-    public void incOppShipTrend(int inc) {
+    
+    public void incOppShipTrend(int inc){
         this.oppShipTrend = this.oppShipTrend + inc;
     }
-
-    public void incOppShotTrend(int inc) {
+    
+    public void incOppShotTrend(int inc){
         this.oppShotTrend = this.oppShotTrend + inc;
     }
 
@@ -81,5 +83,4 @@ public class Field{
     public int getOppShotTrend() {
         return this.oppShotTrend;
     }
-    
 }
