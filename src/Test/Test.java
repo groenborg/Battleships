@@ -9,7 +9,7 @@ import battleships.exampleplayers.RandomPlayer;
 import battleships.exampleplayers.SystematicShooter;
 import battleships.game.Game;
 import battleships.game.GameResult;
-import captainobvious.RAI;
+import captainobvious.CO;
 
 /**
  *
@@ -24,7 +24,7 @@ public class Test {
         Game game = new Game(10,10, ships);
         
         BattleshipAI pa = new SystematicShooter();
-        BattleshipAI pb = new RAI();
+        BattleshipAI pb = new CO();
         for(int i = 0; i < 100; ++i)
         {
             GameResult res = game.playRound(pa, pb);
@@ -34,7 +34,7 @@ public class Test {
         }
         System.out.println(pa.getName() + ": " + pointsA);
         System.out.println(pb.getName() + ": " + pointsB);
-        System.out.println(pb.getName() + ": " + pointsC);
+        System.out.println("Draw: " + ": " + pointsC);
         
         
     }
