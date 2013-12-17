@@ -27,7 +27,6 @@ public class RAI implements BattleshipAI {
     private int matchNumber;
     private int sizeX = 10;
     private int sizeY = 10;
-    
     private int counter = 0;
 
     public RAI() {
@@ -37,6 +36,7 @@ public class RAI implements BattleshipAI {
         this.rnd = new Random();
         this.map = constructMap();
         this.shotSpray = 2;
+        this.shotIncrement = 1;
         System.out.println("lol");
     }
 
@@ -122,13 +122,13 @@ public class RAI implements BattleshipAI {
             Position tmp = (Position) this.shotStack.pop();
             this.map[tmp.x][tmp.y].setShot(true);
             this.lastHit = new Position(tmp.x, tmp.y);
-            System.out.println("stack shot " + counter+" ["+tmp.x+" , "+tmp.y+"]");
+            System.out.println("stack shot " + counter + " [" + tmp.x + " , " + tmp.y + "]");
             ++counter;
             return tmp;
         }
-        
-        System.out.println("pattern shot " + counter + " ["+shotX+","+shotY+"]");
-        ++ counter;
+
+        System.out.println("pattern shot " + counter + " [" + shotX + "," + shotY + "]");
+        ++counter;
         this.map[this.shotX][this.shotY].setShot(true);
         this.lastHit = new Position(this.shotX, this.shotY);
         return new Position(this.shotX, this.shotY);
@@ -139,17 +139,25 @@ public class RAI implements BattleshipAI {
         int x = this.lastHit.x;
         int y = this.lastHit.y;
         if (bln) {
-            if (!this.map[x - 1][y].getShot() && x - 1 >= 0) {
-                this.shotStack.push(new Position(x - 1, y));
+            if (x - 1 >= 0) {
+                if (!this.map[x - 1][y].getShot()) {
+                    this.shotStack.push(new Position(x - 1, y));
+                }
             }
-            if (!this.map[x][y].getShot() && y - 1 >= 0) {
-                this.shotStack.push(new Position(x, y - 1));
+            if (y - 1 >= 0) {
+                if (!this.map[x][y - 1].getShot()) {
+                    this.shotStack.push(new Position(x, y - 1));
+                }
             }
-            if (!this.map[x][y + 1].getShot() && y + 1 < this.sizeY) {
-                this.shotStack.push(new Position(x, y + 1));
+            if (y + 1 < this.sizeY) {
+                if (!this.map[x][y + 1].getShot()) {
+                    this.shotStack.push(new Position(x, y + 1));
+                }
             }
-            if (!this.map[x + 1][y].getShot() && x + 1 < this.sizeX) {
-                this.shotStack.push(new Position(x + 1, y));
+            if (x + 1 < this.sizeX) {
+                if (!this.map[x + 1][y].getShot()) {
+                    this.shotStack.push(new Position(x + 1, y));
+                }
             }
             System.out.println("calc");
         }
