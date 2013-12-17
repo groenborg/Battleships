@@ -8,8 +8,6 @@ public class Field{
     private boolean usShip;
     private int oppShipTrend;
     private int oppShotTrend;
-    private int x;
-    private int y;
 
     public Field() {
         this.shot = false;
@@ -34,14 +32,6 @@ public class Field{
         this.usShip = false;
         this.oppShipTrend = 0;
         this.oppShotTrend = 0;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     public void setShot(boolean yes) {

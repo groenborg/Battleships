@@ -8,6 +8,7 @@ import battleships.BattleshipAI;
 import battleships.exampleplayers.SystematicShooter;
 import battleships.game.Game;
 import battleships.game.GameResult;
+import captainobvious.CO;
 import scurvymcpirate.SMCP;
 
 /**

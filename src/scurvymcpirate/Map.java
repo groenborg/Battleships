@@ -42,33 +42,73 @@ public class Map {
             }
         }
     }
-
-    protected void stratAnalyser() {
-        Comparator<Field> comp = new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                Field tmp1 = (Field) o1;
-                Field tmp2 = (Field) o2;
-                return tmp1.getOppShotTrend() - tmp2.getOppShotTrend();
-            }
-        };
-        
-        for (int y = 0; y < this.map.length; ++y) {
-            for (int x = 0; x < this.map[y].length; ++x) {
-                this.shotPlaces.add(this.map[x][y]);
+ 
+    protected void trendSetter(boolean all) {
+        for (int x = 0; x < this.sizeX; ++x) {
+            for (int y = 0; y < this.sizeY; ++y) {
+                if (all) {
+                    this.map[x][y].resetMatch();
+                } else {
+                    this.map[x][y].resetRound();
+                }
             }
         }
-        Collections.sort(this.shotPlaces, comp);
-         this.shotPlaces = this.shotPlaces.subList(0, 17);
+        this.shipDec = 100;
+        this.shotDec = 100;
+    }
+    
+    
+     public void setShot(int x, int y, boolean yes) {
+        this.map[x][y].setShot(yes);
     }
 
-    protected void prodOurShot(Position p) {
-        this.map[p.x][p.y].setShot(true);
+    public void setHit(int x, int y, boolean yes) {
+        this.map[x][y].setHit(yes);
     }
 
-    protected void prodOurShip(Position p, Ship s, boolean vertical) {
-        int x = p.x;
-        int y = p.y;
+    public void setResolved(int x, int y, boolean yes) {
+        this.map[x][y].setResolved(yes);
+    }
+
+    public void setUsShip(int x, int y, boolean yes) {
+        this.map[x][y].setUsShip(yes);
+    }
+
+    public void incOppShipTrend(int x, int y) {
+        this.map[x][y].incOppShotTrend(this.shotDec);
+        shotDec--;
+    }
+
+    public void incOppShotTrend(int x, int y) {
+        this.map[x][y].incOppShipTrend(this.shotDec);
+        shotDec--;
+    }
+
+    public boolean getShot(int x, int y) {
+        return this.map[x][y].getShot();
+    }
+
+    public boolean getHit(int x, int y) {
+        return this.map[x][y].getHit();
+    }
+
+    public boolean getResolved(int x, int y) {
+        return this.map[x][y].getResolved();
+    }
+
+    public boolean getUsShip(int x, int y) {
+        return this.map[x][y].getUsShip();
+    }
+
+    public int getOppShipTrend(int x, int y) {
+        return this.map[x][y].getOppShipTrend();
+    }
+
+    public int getOppShotTrend(int x, int y) {
+        return this.map[x][y].getOppShotTrend();
+    }
+    
+    protected void setUsShip(int x, int y, Ship s, boolean vertical) {
         for (int a = 0; a < s.size(); ++a) {
             this.map[x][y].setUsShip(true);
             if (vertical) {
@@ -79,15 +119,8 @@ public class Map {
         }
     }
 
-    protected void prodOppShot(Position p) {
-        this.map[p.x][p.y].incOppShotTrend(this.shotDec);
-        shotDec--;
-    }
+   
 
-    protected void prodOppShip(Position p) {
-        this.map[p.x][p.y].incOppShipTrend(this.shipDec);
-        shipDec--;
-    }
 
     protected boolean checkField(int x, int y, Ship s, boolean vertical) {
         for (int a = 0; a < s.size(); ++a) {
@@ -102,21 +135,28 @@ public class Map {
         }
         return false;
     }
+    
+    
 
-    // reset methods
-    protected void trendSetter(boolean all) {
-        for (int x = 0; x < this.sizeX; ++x) {
-            for (int y = 0; y < this.sizeY; ++y) {
-                if (all) {
-                    this.map[x][y].resetMatch();
-                } else {
-                    this.map[x][y].resetRound();
-                }
-            }
-        }
-        this.shipDec = 100;
-        this.shotDec = 100;
-    }
+//    protected void fieldAnalyser() {
+//        Comparator<Field> comp = new Comparator() {
+//            @Override
+//            public int compare(Object o1, Object o2) {
+//                Field tmp1 = (Field) o1;
+//                Field tmp2 = (Field) o2;
+//                return tmp1.getOppShotTrend() - tmp2.getOppShotTrend();
+//            }
+//        };
+//
+//        for (int y = 0; y < this.map.length; ++y) {
+//            for (int x = 0; x < this.map[y].length; ++x) {
+//                this.shotPlaces.add(this.map[x][y]);
+//            }
+//        }
+//        Collections.sort(this.shotPlaces, comp);
+//
+//    }
+   
 
     // Print methods
     public void showMap() {
