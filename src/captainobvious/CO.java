@@ -24,7 +24,7 @@ public class CO implements BattleshipAI {
     private Stack shotStack;
     private Field[][] map;
     private Random rnd;
-    
+    private int counter = 0; 
     private int sizeX = 10;
     private int sizeY = 10;
     
@@ -52,7 +52,7 @@ public class CO implements BattleshipAI {
     @Override
     public void placeShips(Fleet fleet, Board board) {
         //showMap();
-        
+        System.out.println(counter);
         resetMapFields(false);
         shotX = 42;
         shotY = 0;
@@ -97,11 +97,13 @@ public class CO implements BattleshipAI {
 
     @Override
     public Position getFireCoordinates(Fleet fleet) {
+        ++counter;
+        
         if (this.shotX == 42) {
             this.shotX = 0;
             this.map[this.shotX][this.shotY].setShot(true);
            // System.out.println("Pattern shot: " + counter + " [" + shotX + " , " + shotY + "]");
-           // ++counter;
+            
             return new Position(this.shotX, this.shotY);
         }
         if (!this.shotStack.empty()) {
@@ -109,7 +111,7 @@ public class CO implements BattleshipAI {
             this.map[tmp.x][tmp.y].setShot(true);
             this.lastHit = new Position(tmp.x, tmp.y);
            // System.out.println("Stack shot: " + counter + " [" + tmp.x + " , " + tmp.y + "]");
-            //++counter;
+            
             return tmp;
         } else {
             if (this.shotX < this.sizeX - this.shotSpray) {
