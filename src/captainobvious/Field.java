@@ -63,15 +63,15 @@ public class Field {
     }
 
     public boolean getHit() {
-        return this.shot;
+        return this.hit;
     }
 
     public boolean getResolved() {
-        return this.shot;
+        return this.resolved;
     }
 
     public boolean getUsShip() {
-        return this.shot;
+        return this.usShip;
     }
 
     public int getOppShipTrend() {

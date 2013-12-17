@@ -52,6 +52,7 @@ public class RAI implements BattleshipAI {
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
+        showMap();
         resetMapFields(false);
         this.shotCurrent = new Position(0, 0);
 
@@ -140,6 +141,7 @@ public class RAI implements BattleshipAI {
         int x = this.lastHit.x;
         int y = this.lastHit.y;
         if (bln) {
+            this.map[x][y].setHit(true);
             if (x - 1 >= 0) {
                 if (!this.map[x - 1][y].getShot()) {
                     this.shotStack.push(new Position(x - 1, y));
@@ -160,7 +162,7 @@ public class RAI implements BattleshipAI {
                     this.shotStack.push(new Position(x + 1, y));
                 }
             }
-            System.out.println("calc");
+            System.out.println("ramt");
         }
     }
 
@@ -201,6 +203,24 @@ public class RAI implements BattleshipAI {
             System.out.println("");
         }
         return mapField;
+    }
+
+    private void showMap() {
+
+        for (int y = 0; y < this.map.length; ++y) {
+            for (int x = 0; x < this.map[y].length; ++x) {
+                if (this.map[x][y].getShot()) {
+                    if (this.map[x][y].getHit()) {
+                        System.out.print("O");
+                    } else {
+                        System.out.print("X");
+                    }
+                } else {
+                    System.out.print(".");
+                }
+            }
+            System.out.println("");
+        }
     }
 
     private void resetMapFields(boolean all) {
