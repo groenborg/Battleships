@@ -27,12 +27,17 @@ public class RAI implements BattleshipAI {
     private int matchNumber;
     private int sizeX = 10;
     private int sizeY = 10;
+    
+    private int counter = 0;
 
     public RAI() {
         this.shotStack = new Stack();
         this.shotCurrent = new Position(0, 0);
+        this.lastHit = new Position(0, 0);
         this.rnd = new Random();
         this.map = constructMap();
+        this.shotSpray = 2;
+        System.out.println("lol");
     }
 
     @Override
@@ -43,6 +48,7 @@ public class RAI implements BattleshipAI {
     @Override
     public void newMatch(int i) {
         resetMapFields(true);
+        System.out.println("new match begun");
     }
 
     @Override
@@ -55,7 +61,9 @@ public class RAI implements BattleshipAI {
         sizeX = board.sizeX();
         sizeY = board.sizeY();
 
+        System.out.println("hej");
         for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
+
             Ship s = fleet.getShip(i);
             boolean vertical = rnd.nextBoolean();
             boolean finished = true;
@@ -82,6 +90,7 @@ public class RAI implements BattleshipAI {
                 }
             }
             board.placeShip(pos, s, vertical);
+            System.out.println("ship places" + s.size());
         }
     }
 
@@ -89,11 +98,6 @@ public class RAI implements BattleshipAI {
     public void incoming(Position pstn) {
     }
 
-//    private Position shotCurrent;
-//    private int shotIncrement;
-//    private int shotSpray;
-//    private int shotX;
-//    private int shotY;
     @Override
     public Position getFireCoordinates(Fleet fleet) {
         if (this.shotX == 42) {
@@ -101,7 +105,7 @@ public class RAI implements BattleshipAI {
             return new Position(this.shotX, this.shotY);
         }
 
-        if (this.shotX >= this.sizeX - this.shotSpray - 1) {
+        if (this.shotX < this.sizeX - this.shotSpray) {
             this.shotX = this.shotX + this.shotSpray;
         } else {
             this.shotX = this.shotIncrement;
@@ -118,8 +122,13 @@ public class RAI implements BattleshipAI {
             Position tmp = (Position) this.shotStack.pop();
             this.map[tmp.x][tmp.y].setShot(true);
             this.lastHit = new Position(tmp.x, tmp.y);
+            System.out.println("stack shot " + counter+" ["+tmp.x+" , "+tmp.y+"]");
+            ++counter;
             return tmp;
         }
+        
+        System.out.println("pattern shot " + counter + " ["+shotX+","+shotY+"]");
+        ++ counter;
         this.map[this.shotX][this.shotY].setShot(true);
         this.lastHit = new Position(this.shotX, this.shotY);
         return new Position(this.shotX, this.shotY);
@@ -142,6 +151,7 @@ public class RAI implements BattleshipAI {
             if (!this.map[x + 1][y].getShot() && x + 1 < this.sizeX) {
                 this.shotStack.push(new Position(x + 1, y));
             }
+            System.out.println("calc");
         }
     }
 
@@ -177,13 +187,15 @@ public class RAI implements BattleshipAI {
         for (int x = 0; x < this.sizeX; ++x) {
             for (int y = 0; y < this.sizeY; ++y) {
                 mapField[x][y] = new Field();
+                System.out.print(y);
             }
+            System.out.println("");
         }
         return mapField;
     }
 
     private void resetMapFields(boolean all) {
-        for (int x = 0; x < this.sizeX;) {
+        for (int x = 0; x < this.sizeX; ++x) {
             for (int y = 0; y < this.sizeY; ++y) {
                 if (all) {
                     this.map[x][y].resetMatch();
