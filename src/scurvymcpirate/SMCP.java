@@ -27,12 +27,14 @@ public class SMCP implements BattleshipAI {
     private Position lastHit;
     private Stack shotStack;
     private Field[][] map;
+    private GameMap trial;
     private Random rnd;
     private int sizeX = 10;
     private int sizeY = 10;
     private int c;
 
     public SMCP() {
+        this.trial = new GameMap();
         this.shotStack = new Stack();
         this.lastHit = new Position(0, 0);
         this.rnd = new Random();
@@ -50,13 +52,13 @@ public class SMCP implements BattleshipAI {
     @Override
     public void newMatch(int i) {
         resetMapFields(true);
-        System.out.println("new match begun");
+        System.out.println(i + "hej");
     }
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
         System.out.println(c);
-        
+        this.trial.trendSetter(false);
         resetMapFields(false);
         shotX = 42;
         shotY = 0;
@@ -93,10 +95,12 @@ public class SMCP implements BattleshipAI {
             board.placeShip(pos, s, vertical);
         }
         //showShip();
+        //this.trial.shotDensity();
     }
 
     @Override
     public void incoming(Position pstn) {
+        this.trial.incOppShotTrend(pstn.x, pstn.y);
     }
 
     @Override
@@ -153,6 +157,7 @@ public class SMCP implements BattleshipAI {
         int x = this.lastHit.x;
         int y = this.lastHit.y;
         if (bln) {
+            this.trial.incOppShipTrend(x, y);
             this.map[x][y].setHit(true);
             if (x - 1 >= 0) {
                 if (!this.map[x - 1][y].getShot()) {

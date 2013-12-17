@@ -2,7 +2,7 @@ package scurvymcpirate;
 
 
 
-public class Field {
+public class Field implements Comparable{
 
     private boolean shot;
     private boolean hit;
@@ -82,5 +82,11 @@ public class Field {
 
     public int getOppShotTrend() {
         return this.oppShotTrend;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Field f = (Field) o;
+        return this.oppShotTrend - f.oppShotTrend;
     }
 }
