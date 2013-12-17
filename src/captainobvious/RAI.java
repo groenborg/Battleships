@@ -6,6 +6,7 @@ import battleships.Fleet;
 import battleships.Position;
 import battleships.Ship;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  *
@@ -14,21 +15,21 @@ import java.util.Random;
 public class RAI implements BattleshipAI {
 
     private final String aiName = "Captain Obvious";
-    
     private Position shotCurrent;
     private int shotIncrement;
     private int shotSpray;
     private int shotX;
     private int shotY;
-    
+    private Position lastHit;
+    private Stack shotStack;
     private Field[][] map;
     private Random rnd;
     private int matchNumber;
     private int sizeX = 10;
     private int sizeY = 10;
-    
 
     public RAI() {
+        this.shotStack = new Stack();
         this.shotCurrent = new Position(0, 0);
         this.rnd = new Random();
         this.map = constructMap();
@@ -87,42 +88,61 @@ public class RAI implements BattleshipAI {
     @Override
     public void incoming(Position pstn) {
     }
-    
+
 //    private Position shotCurrent;
 //    private int shotIncrement;
 //    private int shotSpray;
 //    private int shotX;
 //    private int shotY;
-
     @Override
     public Position getFireCoordinates(Fleet fleet) {
-        if (this.shotX == 42){
+        if (this.shotX == 42) {
             this.shotX = 0;
             return new Position(this.shotX, this.shotY);
         }
-        
-        if (this.shotX >= this.sizeX - this.shotSpray - 1){
+
+        if (this.shotX >= this.sizeX - this.shotSpray - 1) {
             this.shotX = this.shotX + this.shotSpray;
         } else {
             this.shotX = this.shotIncrement;
-            if (this.shotY < this.sizeY - 1){
+            if (this.shotY < this.sizeY - 1) {
                 this.shotY++;
             }
-            if (this.shotIncrement == 1){
+            if (this.shotIncrement == 1) {
                 this.shotIncrement = 0;
             } else {
                 this.shotIncrement = 1;
             }
         }
-        
-        
-        
+        if (!this.shotStack.empty()) {
+            Position tmp = (Position) this.shotStack.pop();
+            this.map[tmp.x][tmp.y].setShot(true);
+            this.lastHit = new Position(tmp.x, tmp.y);
+            return tmp;
+        }
+        this.map[this.shotX][this.shotY].setShot(true);
+        this.lastHit = new Position(this.shotX, this.shotY);
         return new Position(this.shotX, this.shotY);
-        
     }
 
     @Override
     public void hitFeedBack(boolean bln, Fleet fleet) {
+        int x = this.lastHit.x;
+        int y = this.lastHit.y;
+        if (bln) {
+            if (!this.map[x - 1][y].getShot() && x - 1 >= 0) {
+                this.shotStack.push(new Position(x - 1, y));
+            }
+            if (!this.map[x][y].getShot() && y - 1 >= 0) {
+                this.shotStack.push(new Position(x, y - 1));
+            }
+            if (!this.map[x][y + 1].getShot() && y + 1 < this.sizeY) {
+                this.shotStack.push(new Position(x, y + 1));
+            }
+            if (!this.map[x + 1][y].getShot() && x + 1 < this.sizeX) {
+                this.shotStack.push(new Position(x + 1, y));
+            }
+        }
     }
 
     // Private methods here
