@@ -17,10 +17,9 @@ import java.util.Stack;
  *
  * @author Simon
  */
-public class SMCP implements BattleshipAI{
-    
+public class SMCP implements BattleshipAI {
+
     private final String aiName = "Scurvy MC Pirate";
-    
     private int shotIncrement;
     private int shotSpray;
     private int shotX;
@@ -29,10 +28,9 @@ public class SMCP implements BattleshipAI{
     private Stack shotStack;
     private Field[][] map;
     private Random rnd;
-    
     private int sizeX = 10;
     private int sizeY = 10;
-    
+    private int c;
 
     public SMCP() {
         this.shotStack = new Stack();
@@ -40,7 +38,8 @@ public class SMCP implements BattleshipAI{
         this.rnd = new Random();
         this.map = constructMap();
         this.shotSpray = 2;
-        this.shotIncrement = 1;
+        this.shotIncrement = 0;
+        c = 0;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class SMCP implements BattleshipAI{
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
-        //showMap();
+        System.out.println(c);
         
         resetMapFields(false);
         shotX = 42;
@@ -102,35 +101,48 @@ public class SMCP implements BattleshipAI{
 
     @Override
     public Position getFireCoordinates(Fleet fleet) {
+//        if (shotSpray < fleet.getShip(0).size()) {
+//            shotSpray = fleet.getShip(0).size();
+//        }
+        c++;
+        
+
+        boolean stop = false;
+
         if (this.shotX == 42) {
             this.shotX = 0;
             this.map[this.shotX][this.shotY].setShot(true);
-           // System.out.println("Pattern shot: " + counter + " [" + shotX + " , " + shotY + "]");
-           // ++counter;
             return new Position(this.shotX, this.shotY);
         }
+
         if (!this.shotStack.empty()) {
             Position tmp = (Position) this.shotStack.pop();
             this.map[tmp.x][tmp.y].setShot(true);
             this.lastHit = new Position(tmp.x, tmp.y);
-           // System.out.println("Stack shot: " + counter + " [" + tmp.x + " , " + tmp.y + "]");
-            //++counter;
             return tmp;
         } else {
-            if (this.shotX < this.sizeX - this.shotSpray) {
-                this.shotX = this.shotX + this.shotSpray;
-            } else {
-                this.shotX = this.shotIncrement;
-                if (this.shotY < this.sizeY - 1) {
-                    this.shotY++;
-                }
-                if (this.shotIncrement == 1) {
-                    this.shotIncrement = 0;
+            while (!stop) {
+                if (this.shotX < this.sizeX - this.shotSpray) {
+                    this.shotX = this.shotX + this.shotSpray;
+                    if (!map[shotX][shotY].getShot()){
+                        stop = true;
+                    }
                 } else {
-                    this.shotIncrement = 1;
+                    if (this.shotY < this.sizeY - 1) {
+                        this.shotY++;
+                    }
+                    incCalc();
+                    this.shotX = this.shotIncrement;
+                    if (!map[shotX][shotY].getShot()){
+                        stop = true;
+                    }
+                }
+                if ((shotX == 9 && shotY == 9) || (shotX == 8 && shotY == 9)){
+                    stop = true;
                 }
             }
         }
+
         this.map[this.shotX][this.shotY].setShot(true);
         this.lastHit = new Position(this.shotX, this.shotY);
         return new Position(this.shotX, this.shotY);
@@ -166,6 +178,14 @@ public class SMCP implements BattleshipAI{
     }
 
     // Private methods here
+    private void incCalc() {
+        if (!(shotIncrement < shotSpray - 1)) {
+            shotIncrement = 0;
+        } else {
+            shotIncrement++;
+        }
+    }
+
     private void prodShip(int x, int y, Ship s, boolean vertical) {
         for (int a = 0; a < s.size(); ++a) {
             this.map[x][y].setUsShip(true);
@@ -196,7 +216,7 @@ public class SMCP implements BattleshipAI{
         Field[][] mapField = new Field[sizeX][sizeY];
         for (int x = 0; x < this.sizeX; ++x) {
             for (int y = 0; y < this.sizeY; ++y) {
-                mapField[x][y] = new Field();   
+                mapField[x][y] = new Field();
             }
         }
         return mapField;
@@ -219,22 +239,19 @@ public class SMCP implements BattleshipAI{
             System.out.println("");
         }
     }
-    
-    
-     private void showShip() {
+
+    private void showShip() {
         for (int y = 0; y < this.map.length; ++y) {
             for (int x = 0; x < this.map[y].length; ++x) {
-                if(this.map[x][y].getUsShip()){
+                if (this.map[x][y].getUsShip()) {
                     System.out.print("S");
-                }else{
+                } else {
                     System.out.print(".");
                 }
             }
             System.out.println("");
         }
     }
-    
-    
 
     private void resetMapFields(boolean all) {
         for (int x = 0; x < this.sizeX; ++x) {
@@ -247,6 +264,4 @@ public class SMCP implements BattleshipAI{
             }
         }
     }
-    
-    
 }

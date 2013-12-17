@@ -5,11 +5,10 @@
 package Test;
 
 import battleships.BattleshipAI;
-import battleships.exampleplayers.RandomPlayer;
 import battleships.exampleplayers.SystematicShooter;
 import battleships.game.Game;
 import battleships.game.GameResult;
-import captainobvious.CO;
+import scurvymcpirate.SMCP;
 
 /**
  *
@@ -24,7 +23,7 @@ public class Test {
         Game game = new Game(10,10, ships);
         
         BattleshipAI pa = new SystematicShooter();
-        BattleshipAI pb = new CO();
+        BattleshipAI pb = new SMCP();
         for(int i = 0; i < 100; ++i)
         {
             GameResult res = game.playRound(pa, pb);
