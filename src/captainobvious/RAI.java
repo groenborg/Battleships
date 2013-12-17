@@ -37,7 +37,6 @@ public class RAI implements BattleshipAI {
         this.map = constructMap();
         this.shotSpray = 2;
         this.shotIncrement = 1;
-        System.out.println("lol");
     }
 
     @Override
@@ -61,7 +60,6 @@ public class RAI implements BattleshipAI {
         sizeX = board.sizeX();
         sizeY = board.sizeY();
 
-        System.out.println("hej");
         for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
 
             Ship s = fleet.getShip(i);
@@ -90,7 +88,7 @@ public class RAI implements BattleshipAI {
                 }
             }
             board.placeShip(pos, s, vertical);
-            System.out.println("ship places" + s.size());
+            System.out.println("Ship " + s.size());
         }
     }
 
@@ -102,6 +100,9 @@ public class RAI implements BattleshipAI {
     public Position getFireCoordinates(Fleet fleet) {
         if (this.shotX == 42) {
             this.shotX = 0;
+            this.map[this.shotX][this.shotY].setShot(true);
+            System.out.println("Pattern shot: " + counter + " [" + shotX + " , " + shotY + "]");
+            ++counter;
             return new Position(this.shotX, this.shotY);
         }
 
@@ -122,12 +123,12 @@ public class RAI implements BattleshipAI {
             Position tmp = (Position) this.shotStack.pop();
             this.map[tmp.x][tmp.y].setShot(true);
             this.lastHit = new Position(tmp.x, tmp.y);
-            System.out.println("stack shot " + counter + " [" + tmp.x + " , " + tmp.y + "]");
+            System.out.println("Stack shot: " + counter + " [" + tmp.x + " , " + tmp.y + "]");
             ++counter;
             return tmp;
         }
 
-        System.out.println("pattern shot " + counter + " [" + shotX + "," + shotY + "]");
+        System.out.println("Pattern shot: " + counter + " [" + shotX + "," + shotY + "]");
         ++counter;
         this.map[this.shotX][this.shotY].setShot(true);
         this.lastHit = new Position(this.shotX, this.shotY);
