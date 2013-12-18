@@ -25,7 +25,8 @@ public class GameMap {
         this.shootDensity = new ArrayList();
     }
     
-    protected ArrayList<Placement> densityMapping(Field[][] map) {
+    protected ArrayList<Placement> densityMapping(Field[][] map, int c) {
+        shootDensity.clear();
         for (int y = 0; y < map.length; ++y) {
             for (int x = 0; x < map[y].length - shipValue + 1; ++x) {
                 int tmp = 0;
@@ -46,7 +47,11 @@ public class GameMap {
                 shootDensity.add(temp);
             }
         }
-        Collections.sort(shootDensity);
+        if (c > 5) {
+            Collections.sort(shootDensity);
+        } else {
+            Collections.shuffle(shootDensity);
+        }
         return shootDensity;
     }
 

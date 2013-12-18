@@ -9,6 +9,7 @@ import battleships.Board;
 import battleships.Fleet;
 import battleships.Position;
 import battleships.Ship;
+import java.util.ArrayList;
 
 import java.util.Random;
 import java.util.Stack;
@@ -28,16 +29,12 @@ public class SMCP implements BattleshipAI {
     private Position lastHit;
     private Stack shotStack;
     private Field[][] map;
-    
-    
     private Random rnd;
     private int sizeX = 10;
     private int sizeY = 10;
     private int c;
-    
     private int shotDecrement;
     private int shipDecrement;
-    
 
     public SMCP() {
         this.support = new GameMap();
@@ -49,7 +46,7 @@ public class SMCP implements BattleshipAI {
         this.map = constructMap();
         this.shotSpray = 2;
         this.shotIncrement = 0;
-        
+
     }
 
     @Override
@@ -64,49 +61,79 @@ public class SMCP implements BattleshipAI {
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
-        
-        
         trendSetter(false);
         shotX = 42;
         shotY = 0;
         sizeX = board.sizeX();
         sizeY = board.sizeY();
         c++;
-        
-        if(c > 99){
-            support.densityMapping(map);
-        }
-        
-        
-        for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
 
-            Ship s = fleet.getShip(i);
-            boolean vertical = rnd.nextBoolean();
-            boolean finished = false;
-            Position pos = new Position(1, 1);
-            if (vertical) {
-                while (!finished) {
-                    int x = rnd.nextInt(sizeX);
-                    int y = rnd.nextInt(sizeY - (s.size() - 1));
-                    if (!checkField(x, y, s, vertical)) {
-                        pos = new Position(x, y);
-                        prodShip(x, y, s, vertical);
-                        finished = true;
+        if (c == 1) {
+            for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
+                Ship s = fleet.getShip(i);
+                boolean vertical = rnd.nextBoolean();
+                boolean finished = false;
+                Position pos = new Position(1, 1);
+                if (vertical) {
+                    while (!finished) {
+                        int x = rnd.nextInt(sizeX);
+                        int y = rnd.nextInt(sizeY - (s.size() - 1));
+                        if (checkField(x, y, s, vertical)) {
+                            pos = new Position(x, y);
+                            prodShip(x, y, s, vertical);
+                            finished = true;
+                        }
+                    }
+                } else {
+                    while (!finished) {
+                        int x = rnd.nextInt(sizeX - (s.size() - 1));
+                        int y = rnd.nextInt(sizeY);
+                        if (checkField(x, y, s, vertical)) {
+                            pos = new Position(x, y);
+                            prodShip(x, y, s, vertical);
+                            finished = true;
+                        }
                     }
                 }
-            } else {
-                while (!finished) {
-                    int x = rnd.nextInt(sizeX - (s.size() - 1));
-                    int y = rnd.nextInt(sizeY);
-                    if (!checkField(x, y, s, vertical)) {
-                        pos = new Position(x, y);
-                        prodShip(x, y, s, vertical);
-                        finished = true;
+                board.placeShip(pos, s, vertical);
+            }
+        } else {
+            ArrayList<Placement> placements = support.densityMapping(map, c);
+            Placement tmp;
+            Position p = null;
+            boolean vertical = false;
+            Ship s;
+            for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
+                s = fleet.getShip(i);
+                if (i == 0) {
+                    placeRandomly(s, board);
+                } else {
+                    boolean finished = false;
+                    while (!finished) {
+                        tmp = placements.remove(0);
+                        p = tmp.getPos();
+                        vertical = tmp.isVertical();
+                        if (vertical) {
+                            if (checkField(p.x, p.y, s, vertical)) {
+                                prodShip(p.x, p.y, s, vertical);
+                                finished = true;
+                            }
+                        } else {
+                            if (checkField(p.x, p.y, s, vertical)) {
+                                prodShip(p.x, p.y, s, vertical);
+                                finished = true;
+                            }
+                        }
                     }
+                    board.placeShip(p, s, vertical);
                 }
             }
-            board.placeShip(pos, s, vertical);
         }
+
+        this.support.shotDensity(map);
+        System.out.println("");
+         this.support.showShip(map);
+         System.out.println("");
     }
 
     @Override
@@ -120,8 +147,6 @@ public class SMCP implements BattleshipAI {
 //        if (shotSpray < fleet.getShip(0).size()) {
 //            shotSpray = fleet.getShip(0).size();
 //        }
-        
-        
 
         boolean stop = false;
 
@@ -140,7 +165,7 @@ public class SMCP implements BattleshipAI {
             while (!stop) {
                 if (this.shotX < this.sizeX - this.shotSpray) {
                     this.shotX = this.shotX + this.shotSpray;
-                    if (!map[shotX][shotY].getShot()){
+                    if (!map[shotX][shotY].getShot()) {
                         stop = true;
                     }
                 } else {
@@ -149,11 +174,11 @@ public class SMCP implements BattleshipAI {
                     }
                     incCalc();
                     this.shotX = this.shotIncrement;
-                    if (!map[shotX][shotY].getShot()){
+                    if (!map[shotX][shotY].getShot()) {
                         stop = true;
                     }
                 }
-                if ((shotX == 9 && shotY == 9) || (shotX == 8 && shotY == 9)){
+                if ((shotX == 9 && shotY == 9) || (shotX == 8 && shotY == 9)) {
                     stop = true;
                 }
             }
@@ -196,13 +221,29 @@ public class SMCP implements BattleshipAI {
     }
 
     // Private methods here
-   
     private void incCalc() {
         if (!(shotIncrement < shotSpray - 1)) {
             shotIncrement = 0;
         } else {
             shotIncrement++;
         }
+    }
+
+    private void placeRandomly(Ship s, Board b) {
+        boolean vertical = rnd.nextBoolean();
+        Position pos;
+        if (vertical) {
+            int x = rnd.nextInt(sizeX);
+            int y = rnd.nextInt(sizeY - (s.size() - 1));
+            pos = new Position(x, y);
+            prodShip(x, y, s, vertical);
+        } else {
+            int x = rnd.nextInt(sizeX - (s.size() - 1));
+            int y = rnd.nextInt(sizeY);
+            pos = new Position(x, y);
+            prodShip(x, y, s, vertical);
+        }
+        b.placeShip(pos, s, vertical);
     }
 
     private void prodShip(int x, int y, Ship s, boolean vertical) {
@@ -214,21 +255,29 @@ public class SMCP implements BattleshipAI {
                 x++;
             }
         }
-
     }
 
     private boolean checkField(int x, int y, Ship s, boolean vertical) {
-        for (int a = 0; a < s.size(); ++a) {
-            if (this.map[x][y].getUsShip()) {
-                return true;
-            }
+        for (int b = 0; b < s.size(); ++b) {
             if (vertical) {
-                y++;
+                if ((y + b) < sizeY) {
+                    if (this.map[x][y + b].getUsShip()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
             } else {
-                x++;
+                if ((x + b) < sizeX) {
+                    if (this.map[x + b][y].getUsShip()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
             }
         }
-        return false;
+        return true;
     }
 
     private Field[][] constructMap() {
@@ -240,8 +289,6 @@ public class SMCP implements BattleshipAI {
         }
         return mapField;
     }
-
-    
 
     private void trendSetter(boolean all) {
         for (int x = 0; x < this.sizeX; ++x) {
