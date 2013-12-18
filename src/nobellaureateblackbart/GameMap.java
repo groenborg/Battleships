@@ -44,7 +44,6 @@ public class GameMap {
             }
             y++;
         }
-        
         Collections.sort(shootStack, new Comparator() {
             @Override
             public int compare(Object o1, Object o2) {
@@ -53,7 +52,6 @@ public class GameMap {
                 return p1.getDensity() - p2.getDensity();
             }
         });
-        
         return this.shootStack;
     }
 

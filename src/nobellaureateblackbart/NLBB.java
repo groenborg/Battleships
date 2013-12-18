@@ -157,7 +157,7 @@ public class NLBB implements BattleshipAI {
         //       this.support.shotDensity(map);
 //        System.out.println("");
         //System.out.println("black beard");
-        //this.support.showShip(map);
+        
         //System.out.println("");
     }
 
@@ -169,29 +169,56 @@ public class NLBB implements BattleshipAI {
 
     @Override
     public Position getFireCoordinates(Fleet fleet) {
-        
-        if(this.c < 20){
-            return trendShooter();
-        }else{
-            return trendShooter();
+
+        if (this.c < 20) {
+            this.support.showMap(map);
+            return normalShooter(fleet);
+            
+        } else {
+            return trendShooter(fleet);
         }
     }
 
-    
-
-    private Position trendShooter() {
+    private Position trendShooter(Fleet fleet) {
         Stack<Placement> shootOrder = this.support.createShootStack(map);
         Placement tmp;
         Position p;
         
-        tmp = shootOrder.pop();
-        p = tmp.getPos();
-        return p;
+
+        if (!this.shotStack.empty()) {
+            Position temp = (Position) this.shotStack.pop();
+            this.map[temp.x][temp.y].setShot(true);
+            this.lastHit = new Position(temp.x, temp.y);
+            return temp;
+        } else {
+            if (!shootOrder.empty()) {
+                // shit here
+                tmp = shootOrder.pop();
+                p = tmp.getPos();
+
+                
+                    if (map[p.x][p.y].getShot() == false) {
+                       
+                    } else {
+                        if (!shootOrder.empty()) {
+                            tmp = shootOrder.pop();
+                            p = tmp.getPos();
+                        } else {
+                            normalShooter(fleet);
+                        }
+                    }
+                    //System.out.println(p.x);
+                
+                this.map[p.x][p.y].setShot(true);
+                this.lastHit = new Position(p.x, p.y);
+                return p;
+                // shit here
+            }
+
+        }
+        return null;
     }
 
-    
-    
-    
     @Override
     public void hitFeedBack(boolean bln, Fleet fleet) {
         int x = this.lastHit.x;
@@ -364,8 +391,8 @@ public class NLBB implements BattleshipAI {
         }
         return true;
     }
-    
-private Position normalShooter(Fleet fleet) {
+
+    private Position normalShooter(Fleet fleet) {
         boolean stop = false;
         if (this.shotX == 42) {
             this.shotX = 0;
