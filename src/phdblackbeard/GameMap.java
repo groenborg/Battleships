@@ -31,7 +31,11 @@ public class GameMap {
             for (int x = 0; x < map[y].length - shipValue + 1; ++x) {
                 int tmp = 0;
                 for (int z = 0; z < shipValue; ++z) {
-                    tmp = tmp + map[x + z][y].getOppShotTrend();
+                    //tmp = tmp + map[x + z][y].getOppShotTrend();
+                    int tmp2 = map[x + z][y].getOppShotTrend();
+                    if(tmp2 > tmp){
+                        tmp = tmp2;
+                    }
                 }
                 Placement temp = new Placement(new Position(x, y), false, tmp);
                 shootDensity.add(temp);
@@ -41,7 +45,11 @@ public class GameMap {
             for (int x = 0; x < map[y].length; ++x) {
                 int tmp = 0;
                 for (int z = 0; z < shipValue; ++z) {
-                    tmp = tmp + map[x][y + z].getOppShotTrend();
+                    //tmp = tmp + map[x][y + z].getOppShotTrend();
+                    int tmp2 = map[x][y + z].getOppShotTrend();
+                    if(tmp2 > tmp){
+                        tmp = tmp2;
+                    }
                 }
                 Placement temp = new Placement(new Position(x, y), true, tmp);
                 shootDensity.add(temp);

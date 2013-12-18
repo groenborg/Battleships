@@ -131,9 +131,9 @@ public class SMCP implements BattleshipAI {
         }
 
 //        this.support.shotDensity(map);
-//        System.out.println("");
-//         this.support.showShip(map);
-//         System.out.println("");
+        System.out.println("Scurvy mc");
+        this.support.showShip(map);
+        System.out.println("");
     }
 
     @Override

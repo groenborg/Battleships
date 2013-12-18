@@ -13,14 +13,12 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
-
 /**
  *
  * @author Simon
  */
-public class PHDBB implements BattleshipAI{
-    
-    
+public class PHDBB implements BattleshipAI {
+
     private final String aiName = "Ph.d Blackbeard";
     private int shotIncrement;
     private int shotSpray;
@@ -131,10 +129,11 @@ public class PHDBB implements BattleshipAI{
             }
         }
 
-//        this.support.shotDensity(map);
+        //       this.support.shotDensity(map);
 //        System.out.println("");
-//         this.support.showShip(map);
-//         System.out.println("");
+        System.out.println("black beard");
+        this.support.showShip(map);
+        System.out.println("");
     }
 
     @Override
@@ -268,6 +267,26 @@ public class PHDBB implements BattleshipAI{
                 } else {
                     return false;
                 }
+                if (x != 0) {
+                    if (map[x - 1][y + b].getUsShip()) {
+                        return false;
+                    }
+                }
+                if ((x < sizeX - 1)) {
+                    if (map[x + 1][y + b].getUsShip()) {
+                        return false;
+                    }
+                }
+                if (y != 0) {
+                    if (b == 0 && map[x][y - 1].getUsShip()) {
+                        return false;
+                    }
+                }
+                if ((y + b) < sizeY - 1) {
+                    if (b == s.size() - 1 && map[x][y + b + 1].getUsShip()) {
+                        return false;
+                    }
+                }
             } else {
                 if ((x + b) < sizeX) {
                     if (this.map[x + b][y].getUsShip()) {
@@ -275,6 +294,26 @@ public class PHDBB implements BattleshipAI{
                     }
                 } else {
                     return false;
+                }
+                if (y != 0) {
+                    if (map[x + b][y - 1].getUsShip()) {
+                        return false;
+                    }
+                }
+                if ((y < sizeY - 1)) {
+                    if (map[x + b][y + 1].getUsShip()) {
+                        return false;
+                    }
+                }
+                if (x != 0) {
+                    if (b == 0 && map[x - 1][y].getUsShip()) {
+                        return false;
+                    }
+                }
+                if ((x + b) < sizeX - 1) {
+                    if (b == s.size() - 1 && map[x + b + 1][y].getUsShip()) {
+                        return false;
+                    }
                 }
             }
         }
@@ -304,5 +343,4 @@ public class PHDBB implements BattleshipAI{
         this.shipDecrement = 100;
         this.shotDecrement = 100;
     }
-    
 }
