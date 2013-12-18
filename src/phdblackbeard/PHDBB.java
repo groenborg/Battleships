@@ -10,6 +10,7 @@ import battleships.Fleet;
 import battleships.Position;
 import battleships.Ship;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
 
@@ -110,20 +111,49 @@ public class PHDBB implements BattleshipAI {
                 } else {
                     boolean finished = false;
                     while (!finished) {
-                        tmp = placements.remove(0);
-                        p = tmp.getPos();
-                        vertical = tmp.isVertical();
-                        if (vertical) {
-                            if (checkField(p.x, p.y, s, vertical)) {
-                                prodShip(p.x, p.y, s, vertical);
-                                finished = true;
+                        if (!placements.isEmpty()) {
+                            tmp = placements.remove(0);
+                            p = tmp.getPos();
+                            vertical = tmp.isVertical();
+                            if (vertical) {
+                                if (checkField(p.x, p.y, s, vertical)) {
+                                    prodShip(p.x, p.y, s, vertical);
+                                    finished = true;
+                                }
+                            } else {
+                                if (checkField(p.x, p.y, s, vertical)) {
+                                    prodShip(p.x, p.y, s, vertical);
+                                    finished = true;
+                                }
                             }
                         } else {
-                            if (checkField(p.x, p.y, s, vertical)) {
-                                prodShip(p.x, p.y, s, vertical);
-                                finished = true;
+                            boolean backUp = false;
+                            Position poss;
+                            boolean randVert = rnd.nextBoolean();
+                            if (randVert) {
+                                while (!backUp) {
+                                    int x = rnd.nextInt(sizeX);
+                                    int y = rnd.nextInt(sizeY - (s.size() - 1));
+                                    if (checkRandomField(x, y, s, randVert)) {
+                                        poss = new Position(x, y);
+                                        prodShip(x, y, s, randVert);
+                                        backUp = true;
+                                    }
+                                }
+                            } else {
+                                while (!backUp) {
+                                    int x = rnd.nextInt(sizeX - (s.size() - 1));
+                                    int y = rnd.nextInt(sizeY);
+                                    if (checkRandomField(x, y, s, randVert)) {
+                                        poss = new Position(x, y);
+                                        prodShip(x, y, s, randVert);
+                                        backUp = true;
+                                    }
+                                }
                             }
+                            finished = true;
                         }
+
                     }
                     board.placeShip(p, s, vertical);
                 }
@@ -363,8 +393,6 @@ public class PHDBB implements BattleshipAI {
         return true;
     }
 
-    
-    
     private boolean checkRandomField(int x, int y, Ship s, boolean vertical) {
         for (int b = 0; b < s.size(); ++b) {
             if (vertical) {
@@ -387,9 +415,7 @@ public class PHDBB implements BattleshipAI {
         }
         return true;
     }
-    
-    
-    
+
     private Field[][] constructMap() {
         Field[][] mapField = new Field[sizeX][sizeY];
         for (int x = 0; x < this.sizeX; ++x) {
