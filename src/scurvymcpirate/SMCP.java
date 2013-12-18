@@ -26,23 +26,21 @@ public class SMCP implements BattleshipAI {
     private int shotY;
     private Position lastHit;
     private Stack shotStack;
-    private Field[][] map;
-    private GameMap trial;
+    
+    private GameMap gameMap;
     private Random rnd;
     private int sizeX = 10;
     private int sizeY = 10;
-    private int c;
+    
     private ArrayList<Position> shootlist;
 
     public SMCP() {
-        this.trial = new GameMap();
+        this.gameMap = new GameMap();
         this.shotStack = new Stack();
         this.lastHit = new Position(0, 0);
         this.rnd = new Random();
-        this.map = constructMap();
         this.shotSpray = 2;
         this.shotIncrement = 0;
-        c = 0;
         this.shootlist = new ArrayList();
     }
 
@@ -53,33 +51,31 @@ public class SMCP implements BattleshipAI {
 
     @Override
     public void newMatch(int i) {
-        resetMapFields(true);
-        System.out.println(i + "hej");
+        gameMap.trendSetter(true);
     }
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
-        System.out.println(c);
-        this.trial.trendSetter(false);
-        resetMapFields(false);
+        this.gameMap.trendSetter(false);
         shotX = 42;
         shotY = 0;
         sizeX = board.sizeX();
         sizeY = board.sizeY();
 
         for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
-
+            System.out.println("y");
             Ship s = fleet.getShip(i);
             boolean vertical = rnd.nextBoolean();
             boolean finished = false;
             Position pos = new Position(1, 1);
+           
             if (vertical) {
                 while (!finished) {
                     int x = rnd.nextInt(sizeX);
                     int y = rnd.nextInt(sizeY - (s.size() - 1));
-                    if (!checkField(x, y, s, vertical)) {
+                    if (!gameMap.checkField(x, y, s, vertical)) {
                         pos = new Position(x, y);
-                        prodShip(x, y, s, vertical);
+                        gameMap.setUsShip(x, y, s, vertical);
                         finished = true;
                     }
                 }
@@ -87,64 +83,52 @@ public class SMCP implements BattleshipAI {
                 while (!finished) {
                     int x = rnd.nextInt(sizeX - (s.size() - 1));
                     int y = rnd.nextInt(sizeY);
-                    if (!checkField(x, y, s, vertical)) {
+                    if (!gameMap.checkField(x, y, s, vertical)) {
                         pos = new Position(x, y);
-                        prodShip(x, y, s, vertical);
+                        gameMap.setUsShip(x, y, s, vertical);
                         finished = true;
                     }
                 }
             }
             board.placeShip(pos, s, vertical);
         }
-        //showShip();
-        //this.trial.shotDensity();
+        //this.gameMap.showShip();
+        //this.gameMap.shotDensity();
     }
 
     @Override
     public void incoming(Position pstn) {
-        this.trial.incOppShotTrend(pstn.x, pstn.y);
+        this.gameMap.incOppShotTrend(pstn.x, pstn.y);
     }
 
-    
-    
-    private void newShootAlgorithm(){
-    
-    
-    
-    
-    
+    private void newShootAlgorithm() {
     }
-    
-    
-    
-    
-    
+
     @Override
     public Position getFireCoordinates(Fleet fleet) {
 //        if (shotSpray < fleet.getShip(0).size()) {
 //            shotSpray = fleet.getShip(0).size();
 //        }
-        c++;
-        
 
         boolean stop = false;
 
         if (this.shotX == 42) {
             this.shotX = 0;
-            this.map[this.shotX][this.shotY].setShot(true);
+            this.gameMap.setShot(this.shotX, this.shotY, true);
             return new Position(this.shotX, this.shotY);
         }
 
         if (!this.shotStack.empty()) {
             Position tmp = (Position) this.shotStack.pop();
-            this.map[tmp.x][tmp.y].setShot(true);
+            this.gameMap.setShot(tmp.x, tmp.y, true);
             this.lastHit = new Position(tmp.x, tmp.y);
             return tmp;
         } else {
             while (!stop) {
+                System.out.println("x");
                 if (this.shotX < this.sizeX - this.shotSpray) {
                     this.shotX = this.shotX + this.shotSpray;
-                    if (!map[shotX][shotY].getShot()){
+                    if (!this.gameMap.getShot(shotX, shotY)) {
                         stop = true;
                     }
                 } else {
@@ -153,17 +137,16 @@ public class SMCP implements BattleshipAI {
                     }
                     incCalc();
                     this.shotX = this.shotIncrement;
-                    if (!map[shotX][shotY].getShot()){
+                    if (!this.gameMap.getShot(shotX, shotY)) {
                         stop = true;
                     }
                 }
-                if ((shotX == 9 && shotY == 9) || (shotX == 8 && shotY == 9)){
+                if ((shotX == 9 && shotY == 9) || (shotX == 8 && shotY == 9)) {
                     stop = true;
                 }
             }
         }
-
-        this.map[this.shotX][this.shotY].setShot(true);
+        this.gameMap.setShot(this.shotX, this.shotY, true);
         this.lastHit = new Position(this.shotX, this.shotY);
         return new Position(this.shotX, this.shotY);
     }
@@ -173,25 +156,25 @@ public class SMCP implements BattleshipAI {
         int x = this.lastHit.x;
         int y = this.lastHit.y;
         if (bln) {
-            this.trial.incOppShipTrend(x, y);
-            this.map[x][y].setHit(true);
+            this.gameMap.incOppShipTrend(x, y);
+            this.gameMap.setHit(x, y, true);
             if (x - 1 >= 0) {
-                if (!this.map[x - 1][y].getShot()) {
+                if (!this.gameMap.getShot(x - 1, y)) {
                     this.shotStack.push(new Position(x - 1, y));
                 }
             }
             if (y - 1 >= 0) {
-                if (!this.map[x][y - 1].getShot()) {
+                if (!this.gameMap.getShot(x, y - 1)) {
                     this.shotStack.push(new Position(x, y - 1));
                 }
             }
             if (y + 1 < this.sizeY) {
-                if (!this.map[x][y + 1].getShot()) {
+                if (!this.gameMap.getShot(x, y + 1)) {
                     this.shotStack.push(new Position(x, y + 1));
                 }
             }
             if (x + 1 < this.sizeX) {
-                if (!this.map[x + 1][y].getShot()) {
+                if (!this.gameMap.getShot(x + 1, y)) {
                     this.shotStack.push(new Position(x + 1, y));
                 }
             }
@@ -199,6 +182,7 @@ public class SMCP implements BattleshipAI {
     }
 
     // Private methods here
+    
     private void incCalc() {
         if (!(shotIncrement < shotSpray - 1)) {
             shotIncrement = 0;
@@ -207,82 +191,4 @@ public class SMCP implements BattleshipAI {
         }
     }
 
-    private void prodShip(int x, int y, Ship s, boolean vertical) {
-        for (int a = 0; a < s.size(); ++a) {
-            this.map[x][y].setUsShip(true);
-            if (vertical) {
-                y++;
-            } else {
-                x++;
-            }
-        }
-
-    }
-
-    private boolean checkField(int x, int y, Ship s, boolean vertical) {
-        for (int a = 0; a < s.size(); ++a) {
-            if (this.map[x][y].getUsShip()) {
-                return true;
-            }
-            if (vertical) {
-                y++;
-            } else {
-                x++;
-            }
-        }
-        return false;
-    }
-
-    private Field[][] constructMap() {
-        Field[][] mapField = new Field[sizeX][sizeY];
-        for (int x = 0; x < this.sizeX; ++x) {
-            for (int y = 0; y < this.sizeY; ++y) {
-                mapField[x][y] = new Field();
-            }
-        }
-        return mapField;
-    }
-
-    private void showMap() {
-
-        for (int y = 0; y < this.map.length; ++y) {
-            for (int x = 0; x < this.map[y].length; ++x) {
-                if (this.map[x][y].getShot()) {
-                    if (this.map[x][y].getHit()) {
-                        System.out.print("O");
-                    } else {
-                        System.out.print("X");
-                    }
-                } else {
-                    System.out.print(".");
-                }
-            }
-            System.out.println("");
-        }
-    }
-
-    private void showShip() {
-        for (int y = 0; y < this.map.length; ++y) {
-            for (int x = 0; x < this.map[y].length; ++x) {
-                if (this.map[x][y].getUsShip()) {
-                    System.out.print("S");
-                } else {
-                    System.out.print(".");
-                }
-            }
-            System.out.println("");
-        }
-    }
-
-    private void resetMapFields(boolean all) {
-        for (int x = 0; x < this.sizeX; ++x) {
-            for (int y = 0; y < this.sizeY; ++y) {
-                if (all) {
-                    this.map[x][y].resetMatch();
-                } else {
-                    this.map[x][y].resetRound();
-                }
-            }
-        }
-    }
-}
+}   
