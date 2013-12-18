@@ -52,7 +52,7 @@ public class CO implements BattleshipAI {
     @Override
     public void placeShips(Fleet fleet, Board board) {
         //showMap();
-        System.out.println(counter);
+
         resetMapFields(false);
         shotX = 42;
         shotY = 0;
