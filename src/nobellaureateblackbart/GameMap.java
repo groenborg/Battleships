@@ -25,7 +25,7 @@ public class GameMap {
         this.shootDensity = new ArrayList();
     }
 
-    protected void createShootStack(Field[][] map) {
+    protected Stack<Placement> createShootStack(Field[][] map) {
         boolean indent = false;
         int y = 0;
         int x = 0;
@@ -53,13 +53,8 @@ public class GameMap {
                 return p1.getDensity() - p2.getDensity();
             }
         });
-        int h = 0;
-        while(!shootStack.empty()){
-            Placement tmp = shootStack.pop();
-            int xx = tmp.getPos().x;
-            int yy = tmp.getPos().y;
-        System.out.println(tmp + " "+ xx+"," + yy + " - "+map[xx][yy].getHit());
-        }
+        
+        return this.shootStack;
     }
 
     protected ArrayList<Placement> densityMapping(Field[][] map, int c) {

@@ -26,9 +26,9 @@ public class Test {
         int[] ships = {2,3,3,4,5};
         Game game = new Game(10,10, ships);
         
-        BattleshipAI pa = new SystematicShooter();
+        BattleshipAI pa = new CO();
         BattleshipAI pb = new NLBB();
-        for(int i = 0; i < 100; ++i)
+        for(int i = 0; i < 10; ++i)
         {
             GameResult res = game.playRound(pa, pb);
             if(res == GameResult.AWINS) pointsA++;

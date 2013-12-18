@@ -13,8 +13,8 @@ import java.util.Stack;
  *
  * @author Simon
  */
+public class NLBB implements BattleshipAI {
 
-public class NLBB implements BattleshipAI{
     private final String aiName = "Nobel Laureate Black Bartholomew";
     private int shotIncrement;
     private int shotSpray;
@@ -31,7 +31,7 @@ public class NLBB implements BattleshipAI{
     private int shotDecrement;
     private int shipDecrement;
 
-    public NLBB()  {
+    public NLBB() {
         this.support = new GameMap();
         this.shipDecrement = 100;
         this.shotDecrement = 100;
@@ -62,8 +62,6 @@ public class NLBB implements BattleshipAI{
         sizeX = board.sizeX();
         sizeY = board.sizeY();
         c++;
-        
-        
         if (c == 1) {
             for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
                 Ship s = fleet.getShip(i);
@@ -171,55 +169,26 @@ public class NLBB implements BattleshipAI{
 
     @Override
     public Position getFireCoordinates(Fleet fleet) {
-//        if (shotSpray < fleet.getShip(0).size()) {
-//            shotSpray = fleet.getShip(0).size();
-//        }
-
-        boolean stop = false;
-        if (this.shotX == 42) {
-            this.shotX = 0;
-            this.map[this.shotX][this.shotY].setShot(true);
-            return new Position(this.shotX, this.shotY);
+        
+        if(this.c < 20){
+            return trendShooter();
+        }else{
+            return trendShooter();
         }
-
-        if (!this.shotStack.empty()) {
-            Position tmp = (Position) this.shotStack.pop();
-            this.map[tmp.x][tmp.y].setShot(true);
-            this.lastHit = new Position(tmp.x, tmp.y);
-            return tmp;
-        } else {
-            while (!stop) {
-                if (this.shotX < this.sizeX - this.shotSpray) {
-                    this.shotX = this.shotX + this.shotSpray;
-                    if (!map[shotX][shotY].getShot()) {
-                        stop = true;
-                    }
-                } else {
-                    if (this.shotY < this.sizeY - 1) {
-                        this.shotY++;
-                    }
-                    incCalc();
-                    this.shotX = this.shotIncrement;
-                    if (!map[shotX][shotY].getShot()) {
-                        stop = true;
-                    }
-                }
-                if ((shotX == 9 && shotY == 9) || (shotX == 8 && shotY == 9)) {
-                    stop = true;
-                }
-            }
-        }
-
-        this.map[this.shotX][this.shotY].setShot(true);
-        this.lastHit = new Position(this.shotX, this.shotY);
-        return new Position(this.shotX, this.shotY);
     }
 
     
-    
-    
- 
-    
+
+    private Position trendShooter() {
+        Stack<Placement> shootOrder = this.support.createShootStack(map);
+        Placement tmp;
+        Position p;
+        
+        tmp = shootOrder.pop();
+        p = tmp.getPos();
+        return p;
+    }
+
     
     
     
@@ -394,6 +363,47 @@ public class NLBB implements BattleshipAI{
             }
         }
         return true;
+    }
+    
+private Position normalShooter(Fleet fleet) {
+        boolean stop = false;
+        if (this.shotX == 42) {
+            this.shotX = 0;
+            this.map[this.shotX][this.shotY].setShot(true);
+            return new Position(this.shotX, this.shotY);
+        }
+
+        if (!this.shotStack.empty()) {
+            Position tmp = (Position) this.shotStack.pop();
+            this.map[tmp.x][tmp.y].setShot(true);
+            this.lastHit = new Position(tmp.x, tmp.y);
+            return tmp;
+        } else {
+            while (!stop) {
+                if (this.shotX < this.sizeX - this.shotSpray) {
+                    this.shotX = this.shotX + this.shotSpray;
+                    if (!map[shotX][shotY].getShot()) {
+                        stop = true;
+                    }
+                } else {
+                    if (this.shotY < this.sizeY - 1) {
+                        this.shotY++;
+                    }
+                    incCalc();
+                    this.shotX = this.shotIncrement;
+                    if (!map[shotX][shotY].getShot()) {
+                        stop = true;
+                    }
+                }
+                if ((shotX == 9 && shotY == 9) || (shotX == 8 && shotY == 9)) {
+                    stop = true;
+                }
+            }
+        }
+
+        this.map[this.shotX][this.shotY].setShot(true);
+        this.lastHit = new Position(this.shotX, this.shotY);
+        return new Position(this.shotX, this.shotY);
     }
 
     private boolean checkRandomField(int x, int y, Ship s, boolean vertical) {
