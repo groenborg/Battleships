@@ -1,8 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package phdblackbeard;
+package nobellaureateblackbart;
 
 import battleships.BattleshipAI;
 import battleships.Board;
@@ -17,8 +13,8 @@ import java.util.Stack;
  *
  * @author Simon
  */
-public class PHDBB implements BattleshipAI {
 
+public class NLBB implements BattleshipAI{
     private final String aiName = "Ph.d Blackbeard";
     private int shotIncrement;
     private int shotSpray;
@@ -35,7 +31,7 @@ public class PHDBB implements BattleshipAI {
     private int shotDecrement;
     private int shipDecrement;
 
-    public PHDBB() {
+    public NLBB()  {
         this.support = new GameMap();
         this.shipDecrement = 100;
         this.shotDecrement = 100;
