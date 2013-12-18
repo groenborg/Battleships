@@ -25,8 +25,8 @@ public class Test {
         int[] ships = {2,3,3,4,5};
         Game game = new Game(10,10, ships);
         
-        BattleshipAI pa = new CO();
-        BattleshipAI pb = new PHDBB();
+        BattleshipAI pa = new PHDBB();
+        BattleshipAI pb = new SMCP();
         for(int i = 0; i < 100000; ++i)
         {
             GameResult res = game.playRound(pa, pb);
