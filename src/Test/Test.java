@@ -10,6 +10,7 @@ import battleships.exampleplayers.SystematicShooter;
 import battleships.game.Game;
 import battleships.game.GameResult;
 import captainobvious.CO;
+import nobellaureateblackbart.NLBB;
 import phdblackbeard.PHDBB;
 import scurvymcpirate.SMCP;
 
@@ -25,9 +26,9 @@ public class Test {
         int[] ships = {2,3,3,4,5};
         Game game = new Game(10,10, ships);
         
-        BattleshipAI pa = new PHDBB();
-        BattleshipAI pb = new SMCP();
-        for(int i = 0; i < 100000; ++i)
+        BattleshipAI pa = new SystematicShooter();
+        BattleshipAI pb = new NLBB();
+        for(int i = 0; i < 100; ++i)
         {
             GameResult res = game.playRound(pa, pb);
             if(res == GameResult.AWINS) pointsA++;

@@ -15,7 +15,7 @@ import java.util.Stack;
  */
 
 public class NLBB implements BattleshipAI{
-    private final String aiName = "Ph.d Blackbeard";
+    private final String aiName = "Nobel Laureate Black Bartholomew";
     private int shotIncrement;
     private int shotSpray;
     private int shotX;
@@ -55,13 +55,15 @@ public class NLBB implements BattleshipAI{
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
+        this.support.createShootStack(map);
         trendSetter(false);
         shotX = 42;
         shotY = 0;
         sizeX = board.sizeX();
         sizeY = board.sizeY();
         c++;
-
+        
+        
         if (c == 1) {
             for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
                 Ship s = fleet.getShip(i);
@@ -174,7 +176,6 @@ public class NLBB implements BattleshipAI{
 //        }
 
         boolean stop = false;
-
         if (this.shotX == 42) {
             this.shotX = 0;
             this.map[this.shotX][this.shotY].setShot(true);
@@ -214,6 +215,14 @@ public class NLBB implements BattleshipAI{
         return new Position(this.shotX, this.shotY);
     }
 
+    
+    
+    
+ 
+    
+    
+    
+    
     @Override
     public void hitFeedBack(boolean bln, Fleet fleet) {
         int x = this.lastHit.x;

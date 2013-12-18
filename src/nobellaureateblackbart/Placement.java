@@ -19,10 +19,10 @@ public class Placement implements Comparable {
     private int density;
     
 
-    public Placement(Position pos, boolean vertical, int shotDensity) {
+    public Placement(Position pos, boolean vertical, int Density) {
         this.pos = pos;
         this.vertical = vertical;
-        this.density = shotDensity;
+        this.density = Density;
     }
 
     public Position getPos() {
@@ -33,7 +33,7 @@ public class Placement implements Comparable {
         return vertical;
     }
 
-    public int getShotDensity() {
+    public int getDensity() {
         return density;
     }
 
@@ -47,4 +47,6 @@ public class Placement implements Comparable {
     public String toString() {
         return "\n" + density;
     }
+
+    
 }

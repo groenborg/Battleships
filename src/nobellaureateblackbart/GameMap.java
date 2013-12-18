@@ -15,16 +15,53 @@ import java.util.Stack;
  * @author Simon
  */
 public class GameMap {
-    
+
     private int shipValue = 3; /// optimereing
-    private ArrayList<Placement> shipDensity;
+    private Stack<Placement> shootStack;
     private ArrayList<Placement> shootDensity;
-    
+
     public GameMap() {
-        this.shipDensity = new ArrayList();
+        this.shootStack = new Stack();
         this.shootDensity = new ArrayList();
     }
-    
+
+    protected void createShootStack(Field[][] map) {
+        boolean indent = false;
+        int y = 0;
+        int x = 0;
+        while (y < 10) {
+            while (x < 10) {
+                int tmp = map[x][y].getOppShipTrend();
+                shootStack.push(new Placement(new Position(x, y), indent, tmp));
+                x = x + 2;
+            }
+            if (indent) {
+                indent = false;
+                x = 0;
+            } else {
+                indent = true;
+                x = 1;
+            }
+            y++;
+        }
+        
+        Collections.sort(shootStack, new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                Placement p1 = (Placement) o1;
+                Placement p2 = (Placement) o2;
+                return p1.getDensity() - p2.getDensity();
+            }
+        });
+        int h = 0;
+        while(!shootStack.empty()){
+            Placement tmp = shootStack.pop();
+            int xx = tmp.getPos().x;
+            int yy = tmp.getPos().y;
+        System.out.println(tmp + " "+ xx+"," + yy + " - "+map[xx][yy].getHit());
+        }
+    }
+
     protected ArrayList<Placement> densityMapping(Field[][] map, int c) {
         shootDensity.clear();
         for (int y = 0; y < map.length; ++y) {
@@ -33,7 +70,7 @@ public class GameMap {
                 for (int z = 0; z < shipValue; ++z) {
                     //tmp = tmp + map[x + z][y].getOppShotTrend();
                     int tmp2 = map[x + z][y].getOppShotTrend();
-                    if(tmp2 > tmp){
+                    if (tmp2 > tmp) {
                         tmp = tmp2;
                     }
                 }
@@ -47,7 +84,7 @@ public class GameMap {
                 for (int z = 0; z < shipValue; ++z) {
                     //tmp = tmp + map[x][y + z].getOppShotTrend();
                     int tmp2 = map[x][y + z].getOppShotTrend();
-                    if(tmp2 > tmp){
+                    if (tmp2 > tmp) {
                         tmp = tmp2;
                     }
                 }
@@ -80,7 +117,7 @@ public class GameMap {
             System.out.println("");
         }
     }
-    
+
     public void showShip(Field[][] map) {
         for (int y = 0; y < map.length; ++y) {
             for (int x = 0; x < map[y].length; ++x) {
@@ -93,7 +130,7 @@ public class GameMap {
             System.out.println("");
         }
     }
-    
+
     public void shotDensity(Field[][] map) {
         for (int y = 0; y < map.length; ++y) {
             for (int x = 0; x < map[y].length; ++x) {
@@ -102,7 +139,7 @@ public class GameMap {
             System.out.println("");
         }
     }
-    
+
     public void shipDensity(Field[][] map) {
         for (int y = 0; y < map.length; ++y) {
             for (int x = 0; x < map[y].length; ++x) {
