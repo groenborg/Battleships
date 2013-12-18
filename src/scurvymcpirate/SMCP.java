@@ -9,7 +9,7 @@ import battleships.Board;
 import battleships.Fleet;
 import battleships.Position;
 import battleships.Ship;
-
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
@@ -32,6 +32,7 @@ public class SMCP implements BattleshipAI {
     private int sizeX = 10;
     private int sizeY = 10;
     private int c;
+    private ArrayList<Position> shootlist;
 
     public SMCP() {
         this.trial = new GameMap();
@@ -42,6 +43,7 @@ public class SMCP implements BattleshipAI {
         this.shotSpray = 2;
         this.shotIncrement = 0;
         c = 0;
+        this.shootlist = new ArrayList();
     }
 
     @Override
@@ -103,6 +105,20 @@ public class SMCP implements BattleshipAI {
         this.trial.incOppShotTrend(pstn.x, pstn.y);
     }
 
+    
+    
+    private void newShootAlgorithm(){
+    
+    
+    
+    
+    
+    }
+    
+    
+    
+    
+    
     @Override
     public Position getFireCoordinates(Fleet fleet) {
 //        if (shotSpray < fleet.getShip(0).size()) {
