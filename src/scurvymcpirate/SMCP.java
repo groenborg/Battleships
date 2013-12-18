@@ -24,24 +24,32 @@ public class SMCP implements BattleshipAI {
     private int shotSpray;
     private int shotX;
     private int shotY;
+    private GameMap support;
     private Position lastHit;
     private Stack shotStack;
     private Field[][] map;
-    private GameMap trial;
+    
+    
     private Random rnd;
     private int sizeX = 10;
     private int sizeY = 10;
     private int c;
+    
+    private int shotDecrement;
+    private int shipDecrement;
+    
 
     public SMCP() {
-        this.trial = new GameMap();
+        this.support = new GameMap();
+        this.shipDecrement = 100;
+        this.shotDecrement = 100;
         this.shotStack = new Stack();
         this.lastHit = new Position(0, 0);
         this.rnd = new Random();
         this.map = constructMap();
         this.shotSpray = 2;
         this.shotIncrement = 0;
-        c = 0;
+        
     }
 
     @Override
@@ -51,20 +59,25 @@ public class SMCP implements BattleshipAI {
 
     @Override
     public void newMatch(int i) {
-        resetMapFields(true);
-        System.out.println(i + "hej");
+        trendSetter(true);
     }
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
-        System.out.println(c);
-        this.trial.trendSetter(false);
-        resetMapFields(false);
+        
+        
+        trendSetter(false);
         shotX = 42;
         shotY = 0;
         sizeX = board.sizeX();
         sizeY = board.sizeY();
-
+        c++;
+        
+        if(c > 99){
+            support.densityMapping(map);
+        }
+        
+        
         for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
 
             Ship s = fleet.getShip(i);
@@ -94,13 +107,12 @@ public class SMCP implements BattleshipAI {
             }
             board.placeShip(pos, s, vertical);
         }
-        //showShip();
-        //this.trial.shotDensity();
     }
 
     @Override
     public void incoming(Position pstn) {
-        this.trial.incOppShotTrend(pstn.x, pstn.y);
+        map[pstn.x][pstn.y].incOppShotTrend(shotDecrement);
+        shotDecrement--;
     }
 
     @Override
@@ -108,7 +120,7 @@ public class SMCP implements BattleshipAI {
 //        if (shotSpray < fleet.getShip(0).size()) {
 //            shotSpray = fleet.getShip(0).size();
 //        }
-        c++;
+        
         
 
         boolean stop = false;
@@ -157,7 +169,8 @@ public class SMCP implements BattleshipAI {
         int x = this.lastHit.x;
         int y = this.lastHit.y;
         if (bln) {
-            this.trial.incOppShipTrend(x, y);
+            this.map[x][y].incOppShipTrend(shipDecrement);
+            this.shipDecrement--;
             this.map[x][y].setHit(true);
             if (x - 1 >= 0) {
                 if (!this.map[x - 1][y].getShot()) {
@@ -183,6 +196,7 @@ public class SMCP implements BattleshipAI {
     }
 
     // Private methods here
+   
     private void incCalc() {
         if (!(shotIncrement < shotSpray - 1)) {
             shotIncrement = 0;
@@ -227,38 +241,9 @@ public class SMCP implements BattleshipAI {
         return mapField;
     }
 
-    private void showMap() {
+    
 
-        for (int y = 0; y < this.map.length; ++y) {
-            for (int x = 0; x < this.map[y].length; ++x) {
-                if (this.map[x][y].getShot()) {
-                    if (this.map[x][y].getHit()) {
-                        System.out.print("O");
-                    } else {
-                        System.out.print("X");
-                    }
-                } else {
-                    System.out.print(".");
-                }
-            }
-            System.out.println("");
-        }
-    }
-
-    private void showShip() {
-        for (int y = 0; y < this.map.length; ++y) {
-            for (int x = 0; x < this.map[y].length; ++x) {
-                if (this.map[x][y].getUsShip()) {
-                    System.out.print("S");
-                } else {
-                    System.out.print(".");
-                }
-            }
-            System.out.println("");
-        }
-    }
-
-    private void resetMapFields(boolean all) {
+    private void trendSetter(boolean all) {
         for (int x = 0; x < this.sizeX; ++x) {
             for (int y = 0; y < this.sizeY; ++y) {
                 if (all) {
@@ -268,5 +253,7 @@ public class SMCP implements BattleshipAI {
                 }
             }
         }
+        this.shipDecrement = 100;
+        this.shotDecrement = 100;
     }
 }

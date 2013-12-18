@@ -5,6 +5,8 @@
 package Test;
 
 import battleships.BattleshipAI;
+import battleships.exampleplayers.RandomPlayer;
+import battleships.exampleplayers.SystematicShooter;
 import battleships.game.Game;
 import battleships.game.GameResult;
 import captainobvious.CO;
@@ -22,7 +24,7 @@ public class Test {
         int[] ships = {2,3,3,4,5};
         Game game = new Game(10,10, ships);
         
-        BattleshipAI pa = new CO();
+        BattleshipAI pa = new RandomPlayer();
         BattleshipAI pb = new SMCP();
         for(int i = 0; i < 100; ++i)
         {
