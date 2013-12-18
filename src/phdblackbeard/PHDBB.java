@@ -77,7 +77,7 @@ public class PHDBB implements BattleshipAI {
                     while (!finished) {
                         int x = rnd.nextInt(sizeX);
                         int y = rnd.nextInt(sizeY - (s.size() - 1));
-                        if (checkField(x, y, s, vertical)) {
+                        if (checkRandomField(x, y, s, vertical)) {
                             pos = new Position(x, y);
                             prodShip(x, y, s, vertical);
                             finished = true;
@@ -87,7 +87,7 @@ public class PHDBB implements BattleshipAI {
                     while (!finished) {
                         int x = rnd.nextInt(sizeX - (s.size() - 1));
                         int y = rnd.nextInt(sizeY);
-                        if (checkField(x, y, s, vertical)) {
+                        if (checkRandomField(x, y, s, vertical)) {
                             pos = new Position(x, y);
                             prodShip(x, y, s, vertical);
                             finished = true;
@@ -102,6 +102,7 @@ public class PHDBB implements BattleshipAI {
             Position p = null;
             boolean vertical = false;
             Ship s;
+            int cs = 0;
             for (int i = 0; i < fleet.getNumberOfShips(); ++i) {
                 s = fleet.getShip(i);
                 if (i == 0) {
@@ -131,9 +132,9 @@ public class PHDBB implements BattleshipAI {
 
         //       this.support.shotDensity(map);
 //        System.out.println("");
-        System.out.println("black beard");
-        this.support.showShip(map);
-        System.out.println("");
+        //System.out.println("black beard");
+        //this.support.showShip(map);
+        //System.out.println("");
     }
 
     @Override
@@ -258,6 +259,8 @@ public class PHDBB implements BattleshipAI {
     }
 
     private boolean checkField(int x, int y, Ship s, boolean vertical) {
+
+
         for (int b = 0; b < s.size(); ++b) {
             if (vertical) {
                 if ((y + b) < sizeY) {
@@ -271,20 +274,40 @@ public class PHDBB implements BattleshipAI {
                     if (map[x - 1][y + b].getUsShip()) {
                         return false;
                     }
+                    if (x != 1) {
+                        if (map[x - 2][y + b].getUsShip()) {
+                            return false;
+                        }
+                    }
                 }
                 if ((x < sizeX - 1)) {
                     if (map[x + 1][y + b].getUsShip()) {
                         return false;
+                    }
+                    if (x < sizeX - 2) {
+                        if (map[x + 2][y + b].getUsShip()) {
+                            return false;
+                        }
                     }
                 }
                 if (y != 0) {
                     if (b == 0 && map[x][y - 1].getUsShip()) {
                         return false;
                     }
+                    if (y != 1) {
+                        if (b == 0 && map[x][y - 2].getUsShip()) {
+                            return false;
+                        }
+                    }
                 }
                 if ((y + b) < sizeY - 1) {
                     if (b == s.size() - 1 && map[x][y + b + 1].getUsShip()) {
                         return false;
+                    }
+                    if ((y + b) < sizeY - 2) {
+                        if (b == s.size() - 1 && map[x][y + b + 2].getUsShip()) {
+                            return false;
+                        }
                     }
                 }
             } else {
@@ -299,20 +322,40 @@ public class PHDBB implements BattleshipAI {
                     if (map[x + b][y - 1].getUsShip()) {
                         return false;
                     }
+                    if (y != 1) {
+                        if (map[x + b][y - 2].getUsShip()) {
+                            return false;
+                        }
+                    }
                 }
                 if ((y < sizeY - 1)) {
                     if (map[x + b][y + 1].getUsShip()) {
                         return false;
+                    }
+                    if (y < sizeY - 2) {
+                        if (map[x + b][y + 2].getUsShip()) {
+                            return false;
+                        }
                     }
                 }
                 if (x != 0) {
                     if (b == 0 && map[x - 1][y].getUsShip()) {
                         return false;
                     }
+                    if (x != 1) {
+                        if (b == 0 && map[x - 2][y].getUsShip()) {
+                            return false;
+                        }
+                    }
                 }
                 if ((x + b) < sizeX - 1) {
                     if (b == s.size() - 1 && map[x + b + 1][y].getUsShip()) {
                         return false;
+                    }
+                    if ((x + b) < sizeX - 2) {
+                        if (b == s.size() - 1 && map[x + b + 2][y].getUsShip()) {
+                            return false;
+                        }
                     }
                 }
             }
@@ -320,6 +363,33 @@ public class PHDBB implements BattleshipAI {
         return true;
     }
 
+    
+    
+    private boolean checkRandomField(int x, int y, Ship s, boolean vertical) {
+        for (int b = 0; b < s.size(); ++b) {
+            if (vertical) {
+                if ((y + b) < sizeY) {
+                    if (this.map[x][y + b].getUsShip()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                if ((x + b) < sizeX) {
+                    if (this.map[x + b][y].getUsShip()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    
+    
     private Field[][] constructMap() {
         Field[][] mapField = new Field[sizeX][sizeY];
         for (int x = 0; x < this.sizeX; ++x) {
