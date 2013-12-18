@@ -6,7 +6,7 @@ package phdblackbeard;
 
 
 import battleships.Position;
-import java.util.Comparator;
+
 
 /**
  *
@@ -16,12 +16,13 @@ public class Placement implements Comparable {
 
     private Position pos;
     private boolean vertical;
-    private int shotDensity;
+    private int density;
+    
 
     public Placement(Position pos, boolean vertical, int shotDensity) {
         this.pos = pos;
         this.vertical = vertical;
-        this.shotDensity = shotDensity;
+        this.density = shotDensity;
     }
 
     public Position getPos() {
@@ -33,17 +34,17 @@ public class Placement implements Comparable {
     }
 
     public int getShotDensity() {
-        return shotDensity;
+        return density;
     }
 
     @Override
     public int compareTo(Object o) {
         Placement p = (Placement) o;
-        return this.shotDensity - p.shotDensity;
+        return this.density - p.density;
     }
 
     @Override
     public String toString() {
-        return "\n" + shotDensity;
+        return "\n" + density;
     }
 }

@@ -1,9 +1,6 @@
 package phdblackbeard;
 
 
-
-
-
 public class Field implements Comparable{
 
     private boolean shot;
