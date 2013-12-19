@@ -30,8 +30,10 @@ public class NLBB implements BattleshipAI {
     private int c;
     private int shotDecrement;
     private int shipDecrement;
+    private Stack<Placement> patternStack;
 
     public NLBB() {
+        this.patternStack = new Stack();
         this.support = new GameMap();
         this.shipDecrement = 100;
         this.shotDecrement = 100;
@@ -55,7 +57,7 @@ public class NLBB implements BattleshipAI {
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
-        this.support.createShootStack(map);
+        this.patternStack = this.support.createPatternStack(map);
         trendSetter(false);
         shotX = 42;
         shotY = 0;
@@ -157,7 +159,7 @@ public class NLBB implements BattleshipAI {
         //       this.support.shotDensity(map);
 //        System.out.println("");
         //System.out.println("black beard");
-        
+
         //System.out.println("");
     }
 
@@ -170,53 +172,44 @@ public class NLBB implements BattleshipAI {
     @Override
     public Position getFireCoordinates(Fleet fleet) {
 
-        if (this.c < 20) {
-            this.support.showMap(map);
+        if (this.c < 10) {
+            //this.support.showMap(map);
             return normalShooter(fleet);
-            
+
         } else {
             return trendShooter(fleet);
         }
     }
 
     private Position trendShooter(Fleet fleet) {
-        Stack<Placement> shootOrder = this.support.createShootStack(map);
+
         Placement tmp;
-        Position p;
-        
+        Position p = new Position(0,0);
+        boolean stop = false;
 
         if (!this.shotStack.empty()) {
             Position temp = (Position) this.shotStack.pop();
             this.map[temp.x][temp.y].setShot(true);
             this.lastHit = new Position(temp.x, temp.y);
             return temp;
-        } else {
-            if (!shootOrder.empty()) {
-                // shit here
-                tmp = shootOrder.pop();
-                p = tmp.getPos();
-
-                
+        } else if (!this.patternStack.empty()) {
+            while (stop == false) {
+                if (!this.patternStack.empty()) {
+                    tmp = patternStack.pop();
+                    p = tmp.getPos();
                     if (map[p.x][p.y].getShot() == false) {
-                       
-                    } else {
-                        if (!shootOrder.empty()) {
-                            tmp = shootOrder.pop();
-                            p = tmp.getPos();
-                        } else {
-                            normalShooter(fleet);
-                        }
+                        stop = true;
                     }
-                    //System.out.println(p.x);
-                
-                this.map[p.x][p.y].setShot(true);
-                this.lastHit = new Position(p.x, p.y);
-                return p;
-                // shit here
+                } else {
+                    return normalShooter(fleet);
+                }
             }
-
+            this.map[p.x][p.y].setShot(true);
+            this.lastHit = new Position(p.x, p.y);
+            return new Position(p.x, p.y);
+        } else {
+            return normalShooter(fleet);
         }
-        return null;
     }
 
     @Override

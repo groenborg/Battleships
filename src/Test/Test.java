@@ -28,7 +28,7 @@ public class Test {
         
         BattleshipAI pa = new PHDBB();
         BattleshipAI pb = new NLBB();
-        for(int i = 0; i < 20; ++i)
+        for(int i = 0; i < 10000; ++i)
         {
             GameResult res = game.playRound(pa, pb);
             if(res == GameResult.AWINS) pointsA++;

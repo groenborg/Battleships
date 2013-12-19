@@ -17,22 +17,22 @@ import java.util.Stack;
 public class GameMap {
 
     private int shipValue = 3; /// optimereing
-    private Stack<Placement> shootStack;
+    private Stack<Placement> patternStack;
     private ArrayList<Placement> shootDensity;
 
     public GameMap() {
-        this.shootStack = new Stack();
+        this.patternStack = new Stack();
         this.shootDensity = new ArrayList();
     }
 
-    protected Stack<Placement> createShootStack(Field[][] map) {
+    protected Stack<Placement> createPatternStack(Field[][] map) {
         boolean indent = false;
         int y = 0;
         int x = 0;
         while (y < 10) {
             while (x < 10) {
                 int tmp = map[x][y].getOppShipTrend();
-                shootStack.push(new Placement(new Position(x, y), indent, tmp));
+                patternStack.push(new Placement(new Position(x, y), indent, tmp));
                 x = x + 2;
             }
             if (indent) {
@@ -44,7 +44,7 @@ public class GameMap {
             }
             y++;
         }
-        Collections.sort(shootStack, new Comparator() {
+        Collections.sort(patternStack, new Comparator() {
             @Override
             public int compare(Object o1, Object o2) {
                 Placement p1 = (Placement) o1;
@@ -52,7 +52,7 @@ public class GameMap {
                 return p1.getDensity() - p2.getDensity();
             }
         });
-        return this.shootStack;
+        return this.patternStack;
     }
 
     protected ArrayList<Placement> densityMapping(Field[][] map, int c) {
