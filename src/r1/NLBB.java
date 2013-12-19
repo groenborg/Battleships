@@ -1,4 +1,4 @@
-package r3;
+package r1;
 
 import battleships.BattleshipAI;
 import battleships.Board;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package r3;
+package r1;
 
 import battleships.BattleshipAI;
 

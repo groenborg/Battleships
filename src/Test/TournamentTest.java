@@ -15,7 +15,7 @@ import battleships.game.Tournament;
 import battleships.game.Tournament.Participant;
 import battleships.game.Tournament.TournamentGame;
 import captainobvious.CO;
-import r3.NLBB;
+import r1.NLBB;
 import phdblackbeard.PHDBB;
 import scurvymcpirate.SMCP;
 
