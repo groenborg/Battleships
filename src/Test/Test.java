@@ -4,6 +4,7 @@
  */
 package Test;
 
+import Y2.ProAI;
 import battleships.BattleshipAI;
 import battleships.exampleplayers.RandomPlayer;
 import battleships.exampleplayers.SystematicShooter;
@@ -26,9 +27,9 @@ public class Test {
         int[] ships = {2,3,3,4,5};
         Game game = new Game(10,10, ships);
         
-        BattleshipAI pa = new PHDBB();
-        BattleshipAI pb = new NLBB();
-        for(int i = 0; i < 10000; ++i)
+        BattleshipAI pa = new NLBB();
+        BattleshipAI pb = new PHDBB();
+        for(int i = 0; i < 1000; ++i)
         {
             GameResult res = game.playRound(pa, pb);
             if(res == GameResult.AWINS) pointsA++;

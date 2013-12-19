@@ -31,6 +31,7 @@ public class NLBB implements BattleshipAI {
     private int shotDecrement;
     private int shipDecrement;
     private Stack<Placement> patternStack;
+    private boolean patternUp;
 
     public NLBB() {
         this.patternStack = new Stack();
@@ -43,6 +44,7 @@ public class NLBB implements BattleshipAI {
         this.map = constructMap();
         this.shotSpray = 2;
         this.shotIncrement = 0;
+        this.patternUp = true;
     }
 
     @Override
@@ -52,15 +54,28 @@ public class NLBB implements BattleshipAI {
 
     @Override
     public void newMatch(int i) {
+        c = 0;
         trendSetter(true);
     }
 
     @Override
     public void placeShips(Fleet fleet, Board board) {
         this.patternStack = this.support.createPatternStack(map);
+        this.shotStack.clear();
         trendSetter(false);
+        if (patternUp) {
+            patternUp = false;
+        } else {
+            patternUp = true;
+        }
+
         shotX = 42;
-        shotY = 0;
+        if (patternUp == false) {
+            shotY = 0;
+        } else {
+            shotY = sizeY - 1;
+        }
+        
         sizeX = board.sizeX();
         sizeY = board.sizeY();
         c++;
@@ -155,12 +170,6 @@ public class NLBB implements BattleshipAI {
                 }
             }
         }
-
-        //       this.support.shotDensity(map);
-//        System.out.println("");
-        //System.out.println("black beard");
-
-        //System.out.println("");
     }
 
     @Override
@@ -172,10 +181,8 @@ public class NLBB implements BattleshipAI {
     @Override
     public Position getFireCoordinates(Fleet fleet) {
 
-        if (this.c < 10) {
-            //this.support.showMap(map);
+        if (this.c < 20) {
             return normalShooter(fleet);
-
         } else {
             return trendShooter(fleet);
         }
@@ -184,7 +191,7 @@ public class NLBB implements BattleshipAI {
     private Position trendShooter(Fleet fleet) {
 
         Placement tmp;
-        Position p = new Position(0,0);
+        Position p = new Position(0, 0);
         boolean stop = false;
 
         if (!this.shotStack.empty()) {
@@ -406,8 +413,14 @@ public class NLBB implements BattleshipAI {
                         stop = true;
                     }
                 } else {
-                    if (this.shotY < this.sizeY - 1) {
+                    if(patternUp ==false){
+                        if (this.shotY < this.sizeY - 1) {
                         this.shotY++;
+                        }
+                    }else{
+                        if(this.shotY != 0){
+                            shotY--;
+                        }
                     }
                     incCalc();
                     this.shotX = this.shotIncrement;
@@ -415,12 +428,15 @@ public class NLBB implements BattleshipAI {
                         stop = true;
                     }
                 }
+                
                 if ((shotX == 9 && shotY == 9) || (shotX == 8 && shotY == 9)) {
+                    stop = true;
+                }
+                if ((shotX == 9 && shotY == 0) || (shotX == 8 && shotY == 0)) {
                     stop = true;
                 }
             }
         }
-
         this.map[this.shotX][this.shotY].setShot(true);
         this.lastHit = new Position(this.shotX, this.shotY);
         return new Position(this.shotX, this.shotY);
