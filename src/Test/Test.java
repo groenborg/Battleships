@@ -11,6 +11,7 @@ import battleships.exampleplayers.SystematicShooter;
 import battleships.game.Game;
 import battleships.game.GameResult;
 import captainobvious.CO;
+import dreadpiratedavyjones.DPDJ;
 import nobellaureateblackbart.NLBB;
 import phdblackbeard.PHDBB;
 import scurvymcpirate.SMCP;
@@ -28,7 +29,7 @@ public class Test {
         Game game = new Game(10,10, ships);
         
         BattleshipAI pa = new NLBB();
-        BattleshipAI pb = new PHDBB();
+        BattleshipAI pb = new DPDJ();
         for(int i = 0; i < 1000; ++i)
         {
             GameResult res = game.playRound(pa, pb);
