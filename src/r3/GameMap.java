@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package nobellaureateblackbart;
+package r3;
 
 import battleships.Position;
 import java.util.ArrayList;

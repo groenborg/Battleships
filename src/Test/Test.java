@@ -12,7 +12,7 @@ import battleships.game.Game;
 import battleships.game.GameResult;
 import captainobvious.CO;
 import dreadpiratedavyjones.DPDJ;
-import nobellaureateblackbart.NLBB;
+import r3.NLBB;
 import phdblackbeard.PHDBB;
 import scurvymcpirate.SMCP;
 

@@ -1,4 +1,4 @@
-package nobellaureateblackbart;
+package r3;
 
 import battleships.BattleshipAI;
 import battleships.Board;
@@ -15,7 +15,7 @@ import java.util.Stack;
  */
 public class NLBB implements BattleshipAI {
 
-    private final String aiName = "Nobel Laureate Black Bartholomew";
+    private final String aiName = "R1 - Nobel Laureate Black Bartholomew";
     private int shotIncrement;
     private int shotSpray;
     private int shotX;
